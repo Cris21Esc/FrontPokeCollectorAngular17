@@ -7,8 +7,8 @@ import { HomeComponent} from "./Components/home/home.component";
 import { PokedexComponent} from "./Components/pokedex/pokedex.component";
 import { UserComponent } from './Components/user/user.component';
 import { PokemonComponent } from './Components/pokemon/pokemon.component';
-import { RouterModule, Routes } from '@angular/router';
-import { ErrorPersonalizadoComponent} from "./Components/error-personalizado/error-personalizado.component";
+import { RouterModule} from '@angular/router';
+import { ErrorPersonalizadoComponent} from "./Components/error-personalizado/error-personalizado-component.component";
 import { LoginComponent } from './Components/login/login.component';
 import { ListaPokemonsComponent } from "./Components/lista-pokemons/lista-pokemons.component";
 import { HttpClientModule} from '@angular/common/http';
@@ -32,7 +32,6 @@ import { routes } from './app.routes';
     RegisterComponent,
     MenuPrincipalComponent,
     CombateComponent,
-
   ],
   imports: [
     BrowserModule,

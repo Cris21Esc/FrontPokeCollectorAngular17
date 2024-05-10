@@ -3,7 +3,7 @@ import { HomeComponent } from './Components/home/home.component';
 import { PokedexComponent } from './Components/pokedex/pokedex.component';
 import { UserComponent } from './Components/user/user.component';
 import { loginGuard } from './Components/guards/login.guard';
-import { ErrorPersonalizadoComponent} from "./Components/error-personalizado/error-personalizado.component";
+import { ErrorPersonalizadoComponent } from "./Components/error-personalizado/error-personalizado-component.component";
 import { LoginComponent } from './Components/login/login.component';
 import { PokemonComponent } from './Components/pokemon/pokemon.component';
 import { RegisterComponent } from './Components/register/register.component';

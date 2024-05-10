@@ -1,0 +1,4 @@
+.fadeAnim{
+  animation: fadeIn 0.7s ease forwards;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
