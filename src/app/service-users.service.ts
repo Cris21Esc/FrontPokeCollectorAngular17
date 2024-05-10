@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable,BehaviorSubject } from 'rxjs';
 import { register_user } from './user_register';
-import {EquipoPokemon} from "./equipo-pokemon";
+import { EquipoPokemon } from "./equipo-pokemon";
 
 @Injectable({
   providedIn: 'root'

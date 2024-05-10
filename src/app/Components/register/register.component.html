@@ -1,1 +1,28 @@
-<p>register works!</p>
+<div class="container p-4 d-flex justify-content-center ">
+    <div class="row fadeAnim rounded-4 justify-content-center w-50">
+        <div class="w-50">
+            <div *ngIf="registroexito" class="alert">Se ha registrado con éxito.</div>
+            <h1 class="text-center ">Regístrate</h1>
+            <form (ngSubmit)="onSubmit()">
+                <div class="mb-5">
+                    <label for="nombre" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="nombre" aria-describedby="nombre" name="nombre" required
+                        [(ngModel)]="userData.nombre">
+                </div>
+                <div class="mb-5">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" aria-describedby="email" name="email" required
+                        [(ngModel)]="userData.email">
+                </div>
+                <div class="mb-3">
+                    <label for="contrasena" class="form-label">Contraseña</label>
+                    <input type="password" class="form-control" id="password" aria-describedby="password"
+                        name="contrasena" required [(ngModel)]="userData.contrasena">
+                </div>
+
+                <div class="p-2 text-center "><button type="submit" class="btn btn-light">Registrar usuario</button></div>
+                <div class="p-2"><span>Si estás registrado <a href="/login">inicia sesión aquí</a></span></div>
+            </form>
+        </div>
+    </div>
+</div>

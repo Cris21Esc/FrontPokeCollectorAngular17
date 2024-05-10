@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ChatService } from "../chat.service";
-import {ServicepokemonsService} from "../servicepokemons.service";
-import {Movimiento} from "../movimiento";
+import { ChatService} from "../../chat.service";
+import { ServicepokemonsService} from "../../service-pokemons.service";
+import { Movimiento } from "../../movimiento";
 
 @Component({
   selector: 'app-combate',
@@ -9,11 +9,12 @@ import {Movimiento} from "../movimiento";
   styleUrls: ['./combate.component.css']
 })
 export class CombateComponent implements OnInit {
-  idPokeActivo:number;
-  serverMessage: string;
-  message: string;
+
+  idPokeActivo: number | undefined;
+  serverMessage: string | undefined;
+  message: string | undefined;
   messages: { user: string; message: string; }[] = [];
-  movimientos: Movimiento[];
+  protected movimientos: Movimiento[] | undefined;
 
   constructor(private chatService: ChatService, private servicePokemon:ServicepokemonsService) { }
 
