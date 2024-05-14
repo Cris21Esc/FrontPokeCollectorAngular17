@@ -41,6 +41,9 @@ export class UserComponent implements OnInit {
     this.servicepokemons.findUserIdByNombre(this.userInfo.nombreUsuario).subscribe(
       (userId)=>{
         this.iduser=userId;
+        this.servicepokemons.findAllEquiposByUserId(userId).subscribe(data=>{
+          this.equiposBack = data;
+        });
       });
   }
   showpokes(nombre:string){
@@ -116,7 +119,6 @@ export class UserComponent implements OnInit {
     equipo.pokemon4_id = this.pokesArray[3];
     equipo.pokemon5_id = this.pokesArray[4];
     equipo.pokemon6_id = this.pokesArray[5];
-    console.log(equipo);
     this.serviceUser.guardarTeam(equipo).subscribe((message)=>{
       console.log(message.message);
     });

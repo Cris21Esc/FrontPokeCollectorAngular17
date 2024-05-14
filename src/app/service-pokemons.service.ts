@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Pokemon } from './pokemon';
 import { register_user } from './user_register';
 import { Movimiento } from "./movimiento";
+import {EquipoPokemon} from "./equipo-pokemon";
 
 
 @Injectable({
@@ -88,4 +89,7 @@ export class ServicepokemonsService {
     return this.httpClient.get<Movimiento[]>(`${this.baseURL}/movimientos/`+id)
   }
 
+  findAllEquiposByUserId(userId: number):Observable<EquipoPokemon[]> {
+    return this.httpClient.get<EquipoPokemon[]>(`${this.baseURL}/getAllEquipos/`+userId)
+  }
 }
