@@ -35,4 +35,8 @@ export class ChatService {
       };
     });
   }
+
+  joinRoom(roomId: string, userId: string): void {
+    this.socket.emit('join-room', roomId, userId);
+  }
 }
