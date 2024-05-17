@@ -9,26 +9,41 @@ export class ChatService {
   private socket: Socket;
 
   constructor() {
-    // Inicializamos el socket con la URL del servidor
     this.socket = io('http://localhost:3000', {
-      withCredentials: true, // Habilitamos las credenciales CORS si es necesario
+      withCredentials: true,
     });
   }
 
-  sendMessage(message: string | undefined, user: string | null): void {
-    const data = { user, message }; // Creamos un objeto con las propiedades user y message
-    this.socket.emit('new-message', data); // Enviamos el objeto directamente
+  sendMessage(user: string | null, message: string | undefined, room: string | null): void {
+    const data = { user, message, room };
+    this.socket.emit('message', data);
   }
 
-  sendServerMessage(message: string, user: string | null): void{
-    const data = { user, message }; // Creamos un objeto con las propiedades user y message
-    this.socket.emit('new-message', data)
+  sendServerMessage(room: string, message: string): void {
+    const data = { room, message };
+    this.socket.emit('message', data);
   }
 
-  getMessages(): Observable<{ user: string, message: string }> {
-    return new Observable<{ user: string, message: string }>(observer => {
-      this.socket.on('new-message', (data: { user: string, message: string }) => {
+  getMessages(): Observable<{ userId: string, message: string, room: string }> {
+    return new Observable<{ userId: string, message: string, room: string }>(observer => {
+      this.socket.on('message', (data: { userId: string, message: string, room: string }) => {
         observer.next(data);
+      });
+      return () => {
+        this.socket.disconnect();
+      };
+    });
+  }
+
+  requestLastMessages(room: string, count: number): void {
+    this.socket.emit('request-last-messages', { room, count });
+  }
+
+
+  getRooms(): Observable<string[]> {
+    return new Observable<string[]>(observer => {
+      this.socket.on('rooms', (rooms: string[]) => {
+        observer.next(rooms);
       });
       return () => {
         this.socket.disconnect();
@@ -38,5 +53,13 @@ export class ChatService {
 
   joinRoom(roomId: string, userId: string): void {
     this.socket.emit('join-room', roomId, userId);
+  }
+
+  leaveRoom(): void {
+    this.socket.emit('leave-room');
+  }
+
+  requestRooms(): void {
+    this.socket.emit('request-rooms');
   }
 }

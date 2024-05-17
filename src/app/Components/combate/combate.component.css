@@ -1,0 +1,16 @@
+.combate-container {
+  height: 100vh;
+}
+
+.chat-container {
+  padding: 20px;
+}
+
+.messages {
+  height: 400px;
+  overflow-y: auto;
+}
+
+.sidebar {
+  padding: 20px;
+}
