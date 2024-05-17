@@ -46,6 +46,7 @@ server.listen(port, () => {
 
 
 ////// codigo funcional ^^
+const MAX_USERS_PER_ROOM = 3;
 
 const express = require('express');
 const http = require('http');
@@ -65,15 +66,26 @@ const io = socketIO(server, {
 // Objeto para almacenar las salas y los usuarios en cada sala
 const rooms = {};
 
-io.on('connection', (socket) => {
-  console.log('Nuevo usuario conectado');
+io.on('connection', (socket, userId) => {
+  console.log('Nuevo usuario conectado. Id del socket: ' + socket.id);
+
+  socket.emit('rooms',rooms);
 
   // Manejar la solicitud de unirse a una sala
-  socket.on('join-room', (roomId, userId) => {
+  socket.on('join-room', (room) => {
+    console.log("room: "+roomId+", usuario: "+userId)
     // Verificar si la sala existe, si no, crearla
-    if (!rooms[roomId]) {
-      rooms[roomId] = {};
+    if(socket.room){
+      socket.leave(socket.room);
+      rooms[socket.room]--;
+      if(rooms[socket.room] === 0){
+        delete rooms[socket.room]
+      }
     }
+    socket.join(room);
+    socket.room = room;
+
+    socket.username = username;
     // Verificar si la sala alcanzó el límite de usuarios
     if (Object.keys(rooms[roomId]).length >= MAX_USERS_PER_ROOM) {
       socket.emit('room-full');
