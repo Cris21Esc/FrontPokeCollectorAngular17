@@ -14,8 +14,8 @@ export class ChatService {
     });
   }
 
-  sendMessage(user: string | null, message: string | undefined, room: string | null): void {
-    const data = { user, message, room };
+  sendMessage(userId: string | null, message: string | undefined, room: string | null): void {
+    const data = { userId, message, room };
     this.socket.emit('message', data);
   }
 
@@ -24,29 +24,40 @@ export class ChatService {
     this.socket.emit('message', data);
   }
 
-  getMessages(): Observable<{ userId: string, message: string, room: string }> {
+  getMessages(room: string): Observable<{ userId: string, message: string, room: string }> {
     return new Observable<{ userId: string, message: string, room: string }>(observer => {
       this.socket.on('message', (data: { userId: string, message: string, room: string }) => {
         observer.next(data);
       });
+
       return () => {
-        this.socket.disconnect();
+        this.socket.off('message');
       };
     });
   }
 
-  requestLastMessages(room: string, count: number): void {
-    this.socket.emit('request-last-messages', { room, count });
-  }
+  requestLastMessages(room: string, count: number): Observable<{ userId: string, message: string, room: string }> {
+    return new Observable<{ userId: string, message: string, room: string }>(observer => {
+      this.socket.emit('request-last-messages', { room, count });
 
+      this.socket.on('last-messages', (messages: { userId: string, message: string, room: string }[]) => {
+        messages.forEach(message=>{
+          observer.next(message);
+        })
+      });
+    });
+  }
 
   getRooms(): Observable<string[]> {
     return new Observable<string[]>(observer => {
+      this.socket.off('rooms');
+
       this.socket.on('rooms', (rooms: string[]) => {
         observer.next(rooms);
       });
+
       return () => {
-        this.socket.disconnect();
+        this.socket.off('rooms');
       };
     });
   }

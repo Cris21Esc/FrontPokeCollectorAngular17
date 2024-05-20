@@ -15,25 +15,21 @@ export class CombateComponent implements OnInit, OnDestroy {
   message: string | undefined;
   messages: { userId: string; message: string; room: string; }[] = [];
   protected movimientos: Movimiento[] | undefined;
-  roomId: string = 'combateRoom';
+  roomId: string = '';
   userId: string | null = sessionStorage.getItem("user");
   private messagesSubscription: Subscription | undefined;
   private roomsSubscription: Subscription | undefined;
+  private lastMessagesSubscription: Subscription | undefined;
   showSidebar: boolean = false;
   availableRooms: string[] = [];
+  lastMessagesCount: number = 10;
 
   constructor(private chatService: ChatService, private servicePokemon: ServicepokemonsService) { }
 
   ngOnInit() {
     if (this.userId) {
-      this.chatService.joinRoom(this.roomId, this.userId);
+      this.chatService.requestRooms();
     }
-
-    this.messagesSubscription = this.chatService.getMessages().subscribe((data: { userId: string; message: string; room: string; }) => {
-      if (data.room === this.roomId) {
-        this.messages.push(data);
-      }
-    });
 
     this.roomsSubscription = this.chatService.getRooms().subscribe((rooms: string[]) => {
       this.availableRooms = rooms;
@@ -46,24 +42,19 @@ export class CombateComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.messagesSubscription) {
-      this.messagesSubscription.unsubscribe();
-    }
-    if (this.roomsSubscription) {
-      this.roomsSubscription.unsubscribe();
-    }
+    this.cleanupSubscriptions();
     this.chatService.leaveRoom();
   }
 
   sendMessage() {
-    if (this.message && this.userId) {
+    if (this.message && this.userId && this.roomId) {
       this.chatService.sendMessage(this.userId, this.message, this.roomId);
       this.message = '';
     }
   }
 
   sendServerMessage(message: string) {
-    if (this.userId) {
+    if (this.userId && this.roomId) {
       this.serverMessage = `${this.userId} ha utilizado ${message}`;
       this.chatService.sendServerMessage(this.roomId, this.serverMessage);
     }
@@ -77,23 +68,31 @@ export class CombateComponent implements OnInit, OnDestroy {
   }
 
   joinRoom(room: string) {
+    this.cleanupSubscriptions();
     if (this.userId) {
       this.chatService.joinRoom(room, this.userId);
       this.roomId = room;
-      this.messages = [];
-      this.chatService.requestLastMessages(room, 10); // Solicitar los últimos 10 mensajes al unirse a la sala
+
+      this.lastMessagesSubscription = this.chatService.requestLastMessages(room, this.lastMessagesCount).subscribe((data: { userId: string; message: string; room: string; }) => {
+        if (data.room === this.roomId) {
+          this.messages.push(data);
+        }
+      });
+      console.log(this.messages);
+      this.messagesSubscription = this.chatService.getMessages(room).subscribe((data: { userId: string; message: string; room: string; }) => {
+        if (data.room === this.roomId) {
+          this.messages.push(data);
+        }
+      });
+      console.log(this.messages);
+
       this.toggleSidebar();
     }
   }
-
-
   createRoom() {
     const newRoom = prompt('Introduce el nombre de la nueva sala:');
     if (newRoom && this.userId) {
-      this.chatService.joinRoom(newRoom, this.userId);
-      this.roomId = newRoom;
-      this.messages = [];
-      this.toggleSidebar();
+      this.joinRoom(newRoom);
     }
   }
 
@@ -101,6 +100,22 @@ export class CombateComponent implements OnInit, OnDestroy {
     this.chatService.leaveRoom();
     this.roomId = '';
     this.messages = [];
+    this.cleanupSubscriptions();
     this.toggleSidebar();
+  }
+
+  private cleanupSubscriptions() {
+    if (this.messagesSubscription) {
+      this.messagesSubscription.unsubscribe();
+      this.messagesSubscription = undefined;
+    }
+    if (this.roomsSubscription) {
+      this.roomsSubscription.unsubscribe();
+      this.roomsSubscription = undefined;
+    }
+    if (this.lastMessagesSubscription) {
+      this.lastMessagesSubscription.unsubscribe();
+      this.lastMessagesSubscription = undefined;
+    }
   }
 }

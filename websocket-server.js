@@ -135,7 +135,6 @@ server.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
 */
-
 const express = require('express');
 const http = require('http');
 const socketIO = require('socket.io');
@@ -174,7 +173,8 @@ io.on('connection', (socket) => {
     if (!rooms[room]) {
       rooms[room] = {
         admin: socket.id,
-        users: {}
+        users: {},
+        messages: []
       };
     }
 
@@ -186,8 +186,8 @@ io.on('connection', (socket) => {
   });
 
   socket.on('leave-room', () => {
-    io.to(socket.room).emit('message', { userId: 'servidor', message: `${socket.userId} ha abandonado la sala.`, room: socket.room });
     if (socket.room && rooms[socket.room] && rooms[socket.room].users[socket.id]) {
+      io.to(socket.room).emit('message', { userId: 'servidor', message: `${socket.userId} ha abandonado la sala.`, room: socket.room });
       socket.leave(socket.room);
       delete rooms[socket.room].users[socket.id];
       if (Object.keys(rooms[socket.room].users).length === 0) {
@@ -200,6 +200,7 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     if (socket.room && rooms[socket.room] && rooms[socket.room].users[socket.id]) {
+      io.to(socket.room).emit('message', { userId: 'servidor', message: `${socket.userId} se ha desconectado.`, room: socket.room });
       socket.leave(socket.room);
       delete rooms[socket.room].users[socket.id];
       if (Object.keys(rooms[socket.room].users).length === 0) {
@@ -211,31 +212,25 @@ io.on('connection', (socket) => {
   });
 
   socket.on('message', (data) => {
-    console.log(data);
     const { room, message, userId } = data;
     io.to(room).emit('message', { userId, message, room });
-    console.log(`User ${userId} sent message '${message}' to room ${room}`);
 
-    // Guardar el mensaje en la sala correspondiente
     if (rooms[room]) {
-      if (!rooms[room].messages) {
-        rooms[room].messages = [];
-      }
-      rooms[room].messages.push({ userId, message });
-      // Limitar el número de mensajes guardados (puedes cambiar el número según tus necesidades)
+      rooms[room].messages.push({ userId, message, room });
       if (rooms[room].messages.length > 10) {
-        rooms[room].messages.shift(); // Eliminar el mensaje más antiguo
+        rooms[room].messages.shift();
       }
     }
   });
 
-// En el servidor websocket
   socket.on('request-last-messages', ({ room, count }) => {
     const messages = rooms[room]?.messages || [];
-    console.log("envio");
-    // Enviar solo los últimos 'count' mensajes
     const lastMessages = messages.slice(-count);
     socket.emit('last-messages', lastMessages);
+  });
+
+  socket.on('request-rooms', () => {
+    socket.emit('rooms', Object.keys(rooms));
   });
 });
 
@@ -243,4 +238,3 @@ const port = process.env.PORT || 3000;
 server.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
-

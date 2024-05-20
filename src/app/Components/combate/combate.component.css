@@ -11,6 +11,10 @@
   overflow-y: auto;
 }
 
+.message {
+  margin-bottom: 10px;
+}
+
 .sidebar {
   padding: 20px;
 }

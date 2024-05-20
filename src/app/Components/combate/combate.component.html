@@ -1,36 +1,40 @@
 <div class="container-fluid combate-container">
   <div class="row">
-    <div class="col-md-9 chat-container">
-      <div class="card">
-        <div class="card-header">
-          Sala: {{ roomId ? roomId : 'Seleccione una sala' }}
-        </div>
-        <div class="card-body messages">
-          <div *ngFor="let msg of messages" class="mb-2">
-            <strong>{{ msg.userId }}:</strong> {{ msg.message }}
+    <div class="col-md-9">
+      <div class="chat-container">
+        <div class="card">
+          <div class="card-header">
+            Sala: {{ roomId ? roomId : 'Seleccione una sala' }}
           </div>
-        </div>
-        <div class="card-footer">
-          <div class="input-group">
-            <input type="text" class="form-control" [(ngModel)]="message" (keyup.enter)="sendMessage()" placeholder="Escribe un mensaje...">
-            <button class="btn btn-primary" (click)="sendMessage()">Enviar</button>
+          <div class="card-body messages">
+            <div *ngFor="let msg of messages" class="message">
+              <strong>{{ msg.userId }}:</strong> {{ msg.message }}
+            </div>
+          </div>
+          <div class="card-footer">
+            <div class="input-group">
+              <input type="text" class="form-control" [(ngModel)]="message" (keyup.enter)="sendMessage()" placeholder="Escribe un mensaje...">
+              <button class="btn btn-primary" (click)="sendMessage()">Enviar</button>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="col-md-3 sidebar">
-      <button class="btn btn-secondary mb-3" (click)="toggleSidebar()">Salas Disponibles</button>
-      <div *ngIf="showSidebar" class="card">
-        <div class="card-header">
-          Salas
-        </div>
-        <div class="card-body">
-          <ul class="list-group">
-            <li *ngFor="let room of availableRooms" class="list-group-item" (click)="joinRoom(room)">{{ room }}</li>
-          </ul>
-          <button class="btn btn-success mt-3" (click)="createRoom()">Crear Sala</button>
-          <button class="btn btn-danger mt-3" (click)="leaveRoom()">Abandonar Sala Actual</button>
+    <div class="col-md-3">
+      <div class="sidebar">
+        <button class="btn btn-secondary mb-3" (click)="toggleSidebar()">Salas Disponibles</button>
+        <div *ngIf="showSidebar" class="card">
+          <div class="card-header">
+            Salas
+          </div>
+          <div class="card-body">
+            <ul class="list-group">
+              <li *ngFor="let room of availableRooms" class="list-group-item" (click)="joinRoom(room)">{{ room }}</li>
+            </ul>
+            <button class="btn btn-success mt-3" (click)="createRoom()">Crear Sala</button>
+            <button class="btn btn-danger mt-3" (click)="leaveRoom()">Abandonar Sala Actual</button>
+          </div>
         </div>
       </div>
     </div>
