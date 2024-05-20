@@ -23,7 +23,7 @@ export class UserComponent implements OnInit {
   username:string="";
 
   stringid:string="";
-
+  mensajeBack:string="";
   equipoCrear:number|undefined;
   numEquipos:number=1;
   equiposBack:EquipoPokemon[]=[];
@@ -66,11 +66,6 @@ export class UserComponent implements OnInit {
       this.router.navigate(["/pokemon"]);
     }
 
-  logout(){
-   this.serviceUser.logout();
-   this.router.navigate(["/login"]);
-  }
-
   deletepokemon(idpokemondelete:string){
     this.servicepokemons.findUserIdByNombre(this.userInfo.nombreUsuario).subscribe(
       (userId)=>{
@@ -89,7 +84,7 @@ export class UserComponent implements OnInit {
       this.pokesInEquipo++;
       this.pokesArray.push(parseInt(poke));
       let img = document.createElement("img")
-      img.src = "/assets/gifs/"+poke+".gif";
+      img.src = "/assets/gifs/"+parseInt(poke)+".gif";
       img.loading="lazy";
       img.addEventListener("click", () => {
         this.remove(img);
@@ -115,7 +110,9 @@ export class UserComponent implements OnInit {
     equipo.pokemon5_id = this.pokesArray[4];
     equipo.pokemon6_id = this.pokesArray[5];
     this.serviceUser.guardarTeam(equipo).subscribe((message)=>{
-      console.log(message.message);
+      // @ts-ignore
+      document.getElementById("crearEquipoDiv").classList.add("d-none");
+      this.mensajeBack = message.message;
     });
   }
 

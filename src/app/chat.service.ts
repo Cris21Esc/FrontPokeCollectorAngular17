@@ -20,7 +20,7 @@ export class ChatService {
   }
 
   sendServerMessage(room: string, message: string): void {
-    const data = { room, message };
+    const data = { userId:"servidor",message,room };
     this.socket.emit('message', data);
   }
 
