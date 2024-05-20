@@ -17,8 +17,8 @@
   </div>
   <button class="btn btn-outline-success" *ngIf="pokesInEquipo==6" (click)="guardarEquipo()">Guardar equipo Pokemon</button>
 </div>
-<!--<div class="row mx-0 p-5" *ngIf="equipos.length >= 1">
-  <div class="equipos" *ngFor="let equipo of equipos">
+<<div class="row mx-0 p-5">
+  <div class="equipos" *ngFor="let equipo of equiposBack">
     <h2>Equipo: {{equipo.nombre}}</h2>
     <div class="imgsPokes">
       <img [src]="'/assets/gifs/' + equipo.pokemon1_id + '.gif'" loading="lazy">
@@ -29,7 +29,7 @@
       <img [src]="'/assets/gifs/' + equipo.pokemon6_id + '.gif'" loading="lazy">
     </div>
   </div>
-</div>-->
+</div>
 <div class="row mx-0 p-5">
   <p class="text-center">Colección de {{ username }}</p>
   <div class="pokecarta col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-3 h-auto" *ngFor="let poke of caughtPokemons">

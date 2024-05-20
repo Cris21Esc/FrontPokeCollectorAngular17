@@ -78,7 +78,6 @@ export class CombateComponent implements OnInit, OnDestroy {
           this.messages.push(data);
         }
       });
-      console.log(this.messages);
       this.messagesSubscription = this.chatService.getMessages(room).subscribe((data: { userId: string; message: string; room: string; }) => {
         if (data.room === this.roomId) {
           this.messages.push(data);

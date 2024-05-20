@@ -42,7 +42,10 @@ export class UserComponent implements OnInit {
       (userId)=>{
         this.iduser=userId;
         this.servicepokemons.findAllEquiposByUserId(userId).subscribe(data=>{
-          this.equiposBack = data;
+          console.log(data);
+          data.forEach(equipo=>{
+            this.equiposBack.push(equipo);
+          });
         });
       });
   }
@@ -66,14 +69,6 @@ export class UserComponent implements OnInit {
   logout(){
    this.serviceUser.logout();
    this.router.navigate(["/login"]);
-  }
-
-  finduserid(){
-    this.serviceUser.findUserIdByNombre(this.userInfo.nombreUsuario).subscribe(
-      (userId)=>{
-        this.iduser=userId;
-        console.log(this.iduser)
-      })
   }
 
   deletepokemon(idpokemondelete:string){
